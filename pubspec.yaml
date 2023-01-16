@@ -1,0 +1,45 @@
+name: mi_csi
+description: Milyen közös programot tudnánk ma csinálni?
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.4 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  flutter_flip_card: ^0.0.3
+  fluttertoast: ^8.1.1
+  address_search_field: ^5.0.3
+  map_launcher: ^2.4.0
+  flutter_svg: ^1.1.6
+  http: ^0.13.3
+  sqflite: ^2.0.0+4
+  path: ^1.8.0
+  image_picker: ^0.8.1
+  profanity_filter: ^2.0.0
+  image_cropper: ^3.0.1
+  scroll_snap_list: ^0.9.1
+  flutter_phoenix: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/free_time_activities.jpeg
+    - assets/images/draw_card.jpg
+    - assets/images/roulette.jpg
+
