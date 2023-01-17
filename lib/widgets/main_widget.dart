@@ -370,7 +370,10 @@ class _MainWidgetState extends State<MainWidget> {
                 child: Text(
                   'Húzok a másik paklijából egy programot!',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 50,),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 50,
+                  ),
                 ),
               ),
             ),
@@ -379,8 +382,8 @@ class _MainWidgetState extends State<MainWidget> {
             onTap: () {
               Navigator.of(context)
                   .push(MaterialPageRoute(
-                  builder: (context) => DrawRandomCardWidget(
-                      session: session, user: widget.user)))
+                      builder: (context) => DrawRandomCardWidget(
+                          session: session, user: widget.user)))
                   .whenComplete(() {
                 setState(() {
                   _loadGroupsLoading = true;
@@ -405,7 +408,10 @@ class _MainWidgetState extends State<MainWidget> {
                 child: Text(
                   'Sorsolok egy programot a közösekből!',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 50,),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 50,
+                  ),
                 ),
               ),
             ),

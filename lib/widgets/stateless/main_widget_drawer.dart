@@ -24,7 +24,7 @@ class MainWidgetDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
+    return SafeArea(child: Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -34,7 +34,7 @@ class MainWidgetDrawer extends StatelessWidget {
                 image: DecorationImage(
                     fit: BoxFit.fitWidth,
                     image:
-                        AssetImage('assets/images/free_time_activities.jpeg'))),
+                    AssetImage('assets/images/free_time_activities.jpeg'))),
             child: Text(
               '',
               style: TextStyle(color: Colors.white, fontSize: 25),
@@ -50,9 +50,9 @@ class MainWidgetDrawer extends StatelessWidget {
               } else {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => CreateNewProgramIdeaWidget(
-                          session: session,
-                          user: user,
-                        )));
+                      session: session,
+                      user: user,
+                    )));
               }
             },
           ),
@@ -62,10 +62,10 @@ class MainWidgetDrawer extends StatelessWidget {
             onTap: () {
               Navigator.of(context)
                   .push(MaterialPageRoute(
-                      builder: (context) => HandleGroupsWidget(
-                            session: session,
-                            user: user,
-                          )))
+                  builder: (context) => HandleGroupsWidget(
+                    session: session,
+                    user: user,
+                  )))
                   .whenComplete(() {
                 refreshState();
 
@@ -103,6 +103,6 @@ class MainWidgetDrawer extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
