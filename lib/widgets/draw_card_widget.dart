@@ -111,7 +111,7 @@ class _DrawCardWidgetState extends State<DrawCardWidget>
                   scrollDirection: Axis.horizontal,
                   selectedItemAnchor: SelectedItemAnchor.MIDDLE,
                   onItemFocus: _onItemFocus,
-                  itemSize: 220,
+                  itemSize: 200,
                   initialIndex: 0,
                   scrollPhysics: selected
                       ? const NeverScrollableScrollPhysics()

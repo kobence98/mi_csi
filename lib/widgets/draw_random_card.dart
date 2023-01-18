@@ -120,7 +120,7 @@ class _DrawRandomCardWidgetState extends State<DrawRandomCardWidget>
                   scrollDirection: Axis.horizontal,
                   selectedItemAnchor: SelectedItemAnchor.MIDDLE,
                   onItemFocus: _onItemFocus,
-                  itemSize: 220,
+                  itemSize: 200,
                   initialIndex: 0,
                   scrollPhysics: selected
                       ? const NeverScrollableScrollPhysics()

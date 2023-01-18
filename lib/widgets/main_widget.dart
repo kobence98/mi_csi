@@ -66,7 +66,7 @@ class _MainWidgetState extends State<MainWidget> {
               ? _noActualProgramIdeaWidget()
               : _actualProgramIdeaWidget());
     }
-    return Scaffold(
+    return SafeArea(child: Scaffold(
         key: _scaffoldKey,
         endDrawer: MainWidgetDrawer(
           session: widget.session,
@@ -108,7 +108,7 @@ class _MainWidgetState extends State<MainWidget> {
               )
             ],
           ),
-        ));
+        )));
   }
 
   void _openMap(LatLng latLng, String name, String placeName) async {
