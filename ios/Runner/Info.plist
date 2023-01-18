@@ -67,5 +67,7 @@
     <string>Ha képet akarsz hozzáadni a kártya hátuljához akkor engedélyezned kell a galériát!</string>
     <key>NSCameraUsageDescription </key>
     <string>Ha élő fotót akarsz hozzáadni a kártya hátuljához akkor engedélyezned kell a kamerát!</string>
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
 </dict>
 </plist>
