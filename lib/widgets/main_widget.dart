@@ -66,49 +66,47 @@ class _MainWidgetState extends State<MainWidget> {
               ? _noActualProgramIdeaWidget()
               : _actualProgramIdeaWidget());
     }
-    return SafeArea(child: Scaffold(
-        key: _scaffoldKey,
-        endDrawer: MainWidgetDrawer(
-          session: widget.session,
-          user: widget.user,
-          refreshState: () {
-            setState(() {
-              _loadGroupsLoading = true;
-              _loadChosenGroupDataLoading = true;
-              _sendDataLoading = false;
-            });
-            Navigator.of(context).pop();
-          },
-        ),
-        body: Container(
-          color: Colors.black,
-          child: Column(
-            children: [
-              Flexible(
-                flex: 1,
-                child: Container(
-                  padding: const EdgeInsets.only(right: 10),
-                  alignment: Alignment.centerRight,
-                  child: InkWell(
-                    child: const Icon(
-                      Icons.menu,
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                    onTap: () => _scaffoldKey.currentState!.openEndDrawer(),
+    return SafeArea(
+        child: Scaffold(
+            key: _scaffoldKey,
+            endDrawer: MainWidgetDrawer(
+              session: widget.session,
+              user: widget.user,
+              refreshState: () {
+                setState(() {
+                  _loadGroupsLoading = true;
+                  _loadChosenGroupDataLoading = true;
+                  _sendDataLoading = false;
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+            body: Container(
+              color: Colors.black,
+              height: MediaQuery.of(context).size.height,
+              child: Stack(
+                children: [
+                  Container(
+                    color: Colors.black,
+                    height: MediaQuery.of(context).size.height,
+                    child: mainWidget,
                   ),
-                ),
+                  Container(
+                    height: 70,
+                    padding: const EdgeInsets.only(right: 10),
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      child: const Icon(
+                        Icons.menu,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                      onTap: () => _scaffoldKey.currentState!.openEndDrawer(),
+                    ),
+                  ),
+                ],
               ),
-              Flexible(
-                flex: 12,
-                child: Container(
-                  color: Colors.black,
-                  child: mainWidget,
-                ),
-              )
-            ],
-          ),
-        )));
+            )));
   }
 
   void _openMap(LatLng latLng, String name, String placeName) async {
@@ -312,7 +310,7 @@ class _MainWidgetState extends State<MainWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            height: 100,
+            height: 70,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -354,7 +352,7 @@ class _MainWidgetState extends State<MainWidget> {
               });
             },
             child: Container(
-              height: (MediaQuery.of(context).size.height - 163) / 2,
+              height: (MediaQuery.of(context).size.height - 70) / 2,
               width: MediaQuery.of(context).size.width,
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -392,7 +390,7 @@ class _MainWidgetState extends State<MainWidget> {
               });
             },
             child: Container(
-              height: (MediaQuery.of(context).size.height - 163) / 2,
+              height: (MediaQuery.of(context).size.height - 70) / 2,
               width: MediaQuery.of(context).size.width,
               decoration: const BoxDecoration(
                 color: Colors.white,

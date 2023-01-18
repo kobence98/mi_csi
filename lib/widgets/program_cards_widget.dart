@@ -168,13 +168,19 @@ class _ProgramCardsWidgetState extends State<ProgramCardsWidget> {
                       idea.programType.icon,
                       color: Colors.black,
                     ),
-
-                    InkWell(child: Icon(
-                      idea.userId == widget.user.userId ? Icons.star : Icons.supervisor_account_rounded,
-                      color: Colors.yellow.shade700,
-                    ), onTap: (){
-                          MiCsiToast.info( idea.userId == widget.user.userId ? 'Ezt a programot te hoztad létre!': 'Ezt a programot ${idea.userName} hozta létre!');
-                    },),
+                    InkWell(
+                      child: Icon(
+                        idea.userId == widget.user.userId
+                            ? Icons.star
+                            : Icons.supervisor_account_rounded,
+                        color: Colors.yellow.shade700,
+                      ),
+                      onTap: () {
+                        MiCsiToast.info(idea.userId == widget.user.userId
+                            ? 'Ezt a programot te hoztad létre!'
+                            : 'Ezt a programot ${idea.userName} hozta létre!');
+                      },
+                    ),
                     Icon(
                       idea.programType.icon,
                       color: Colors.black,
@@ -197,19 +203,22 @@ class _ProgramCardsWidgetState extends State<ProgramCardsWidget> {
                       idea.programType.icon,
                       color: Colors.black,
                     ),
-                    InkWell(child: idea.usedTimes != 0
-                        ? const Icon(
-                      Icons.check,
-                      color: Colors.green,
-                    ) : const Icon(
-                      Icons.not_interested_rounded,
-                      color: Colors.red,
+                    InkWell(
+                      child: idea.usedTimes != 0
+                          ? const Icon(
+                              Icons.check,
+                              color: Colors.green,
+                            )
+                          : const Icon(
+                              Icons.not_interested_rounded,
+                              color: Colors.red,
+                            ),
+                      onTap: () {
+                        MiCsiToast.info(idea.usedTimes == 0
+                            ? 'Ezt a programot még nem csináltátok meg!'
+                            : 'Ezt a programot már megcsináltátok! :)');
+                      },
                     ),
-                    onTap: (){
-                      if(idea.usedTimes == 0){
-                        MiCsiToast.info(idea.usedTimes == 0 ? 'Ezt a programot még nem csináltátok meg!' : 'Ezt a programot már megcsináltátok! :)');
-                      }
-                    },),
                     Icon(
                       idea.programType.icon,
                       color: Colors.black,
