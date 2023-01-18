@@ -430,7 +430,7 @@ class _MainWidgetState extends State<MainWidget> {
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            height: MediaQuery.of(context).size.height - 293,
+            height: MediaQuery.of(context).size.height - 300,
             decoration: _chosenGroupData!.actualProgramIdea!.pictureId == null
                 ? BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
