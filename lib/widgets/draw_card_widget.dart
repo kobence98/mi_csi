@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flip_card/controllers/flip_card_controllers.dart';
 import 'package:flutter_flip_card/flipcard/flip_card.dart';
 import 'package:flutter_flip_card/modal/flip_side.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:mi_csi/api/program_idea.dart';
 import 'package:mi_csi/base/session.dart';
@@ -84,7 +84,7 @@ class _DrawCardWidgetState extends State<DrawCardWidget>
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: selected
             ? FloatingActionButton(
-          backgroundColor: Colors.black,
+                backgroundColor: Colors.black,
                 onPressed: () {
                   _openChosenDialog();
                 },
@@ -104,134 +104,142 @@ class _DrawCardWidgetState extends State<DrawCardWidget>
           backgroundColor: _colorAnimation.value,
         ),
         body: Container(
-          color: _colorAnimation.value,
-          child: _loading
-              ? const LoadingAnimation()
-              : ScrollSnapList(
-                  scrollDirection: Axis.horizontal,
-                  selectedItemAnchor: SelectedItemAnchor.MIDDLE,
-                  onItemFocus: _onItemFocus,
-                  itemSize: 200,
-                  initialIndex: 0,
-                  scrollPhysics: selected
-                      ? const NeverScrollableScrollPhysics()
-                      : const ScrollPhysics(),
-                  dynamicItemSize: true,
-                  itemBuilder: (context, i) {
-                    ProgramIdea idea = programIdeas.elementAt(i);
-                    Widget frontSide = Container(
-                      color: _colorAnimation.value,
-                      child: Container(
-                        decoration: idea.pictureId == null
-                            ? BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                                border: Border.all(color: Colors.black),
-                              )
-                            : BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.white,
-                                image: DecorationImage(
-                                  opacity: 0.3,
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(
-                                    "${widget.session.domainName}/api/images/${idea.pictureId}",
-                                    headers: widget.session.headers,
-                                  ),
-                                ),
-                              ),
-                        height: MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width,
-                        child: Center(
-                          child: Text(
-                            idea.name,
-                            style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width / 15,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    );
-
-                    Widget backSide = Container(
-                      color: _colorAnimation.value,
-                      child: idea.pictureId == null
-                          ? Center(
-                              child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.black,
-                              ),
+            color: _colorAnimation.value,
+            child: _loading
+                ? const LoadingAnimation()
+                : (programIdeas.isEmpty
+                    ? Container(margin: const EdgeInsets.all(10), child: const Center(
+                child: Text(
+                  'Nincsenek kártyák, a menüből elérve tudtok új kártyákat létrehozni!', textAlign: TextAlign.center, style: TextStyle(fontSize: 30),)),)
+                    : ScrollSnapList(
+                        scrollDirection: Axis.horizontal,
+                        selectedItemAnchor: SelectedItemAnchor.MIDDLE,
+                        onItemFocus: _onItemFocus,
+                        itemSize: 200,
+                        initialIndex: 0,
+                        scrollPhysics: selected
+                            ? const NeverScrollableScrollPhysics()
+                            : const ScrollPhysics(),
+                        dynamicItemSize: true,
+                        itemBuilder: (context, i) {
+                          ProgramIdea idea = programIdeas.elementAt(i);
+                          Widget frontSide = Container(
+                            color: _colorAnimation.value,
+                            child: Container(
+                              decoration: idea.pictureId == null
+                                  ? BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white,
+                                      border: Border.all(color: Colors.black),
+                                    )
+                                  : BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.white,
+                                      image: DecorationImage(
+                                        opacity: 0.3,
+                                        fit: BoxFit.fill,
+                                        image: NetworkImage(
+                                          "${widget.session.domainName}/api/images/${idea.pictureId}",
+                                          headers: widget.session.headers,
+                                        ),
+                                      ),
+                                    ),
                               height: MediaQuery.of(context).size.height,
                               width: MediaQuery.of(context).size.width,
                               child: Center(
-                                child: Icon(
-                                  idea.programType.icon,
-                                  color: Colors.white,
-                                  size: MediaQuery.of(context).size.width / 4,
-                                ),
-                              ),
-                            ))
-                          : Center(
-                              child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                    "${widget.session.domainName}/api/images/${idea.pictureId}",
-                                    headers: widget.session.headers,
+                                child: Text(
+                                  idea.name,
+                                  style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width / 15,
                                   ),
+                                  textAlign: TextAlign.center,
                                 ),
-                              ),
-                              height: MediaQuery.of(context).size.height,
-                              width: MediaQuery.of(context).size.width,
-                            )),
-                    );
-                    // _askForConfirm(idea, flipCardController);
-
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        GestureDetector(
-                          child: AnimatedSize(
-                            duration: const Duration(seconds: 1),
-                            child: Container(
-                              height: _selectedIdea == idea ? 390 : 300,
-                              width: _selectedIdea == idea ? 260 : 200,
-                              color: Colors.white,
-                              child: FlipCard(
-                                rotateSide: RotateSide.right,
-                                animationDuration: const Duration(seconds: 1),
-                                axis: FlipAxis.vertical,
-                                controller: flipCardControllers.elementAt(i),
-                                frontWidget: backSide,
-                                backWidget: frontSide,
                               ),
                             ),
-                          ),
-                          onTap: () {
-                            if (!selected) {
-                              flipCardControllers
-                                  .elementAt(i)
-                                  .flipcard()
-                                  .whenComplete(() {
-                                setState(() {
-                                  selected = true;
-                                  _selectedIdea = idea;
-                                  _colorController.forward();
-                                });
-                              });
-                            }
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                  itemCount: programIdeas.length,
-                  reverse: false,
-                ),
-        ),
+                          );
+
+                          Widget backSide = Container(
+                            color: _colorAnimation.value,
+                            child: idea.pictureId == null
+                                ? Center(
+                                    child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.black,
+                                    ),
+                                    height: MediaQuery.of(context).size.height,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Center(
+                                      child: Icon(
+                                        idea.programType.icon,
+                                        color: Colors.white,
+                                        size:
+                                            MediaQuery.of(context).size.width /
+                                                4,
+                                      ),
+                                    ),
+                                  ))
+                                : Center(
+                                    child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          "${widget.session.domainName}/api/images/${idea.pictureId}",
+                                          headers: widget.session.headers,
+                                        ),
+                                      ),
+                                    ),
+                                    height: MediaQuery.of(context).size.height,
+                                    width: MediaQuery.of(context).size.width,
+                                  )),
+                          );
+                          // _askForConfirm(idea, flipCardController);
+
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              GestureDetector(
+                                child: AnimatedSize(
+                                  duration: const Duration(seconds: 1),
+                                  child: Container(
+                                    height: _selectedIdea == idea ? 390 : 300,
+                                    width: _selectedIdea == idea ? 260 : 200,
+                                    color: Colors.white,
+                                    child: FlipCard(
+                                      rotateSide: RotateSide.right,
+                                      animationDuration:
+                                          const Duration(seconds: 1),
+                                      axis: FlipAxis.vertical,
+                                      controller:
+                                          flipCardControllers.elementAt(i),
+                                      frontWidget: backSide,
+                                      backWidget: frontSide,
+                                    ),
+                                  ),
+                                ),
+                                onTap: () {
+                                  if (!selected) {
+                                    flipCardControllers
+                                        .elementAt(i)
+                                        .flipcard()
+                                        .whenComplete(() {
+                                      setState(() {
+                                        selected = true;
+                                        _selectedIdea = idea;
+                                        _colorController.forward();
+                                      });
+                                    });
+                                  }
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                        itemCount: programIdeas.length,
+                        reverse: false,
+                      ))),
       ),
     );
   }
@@ -325,8 +333,7 @@ class _DrawCardWidgetState extends State<DrawCardWidget>
                             const SizedBox(
                               width: 10,
                             ),
-                            Text(
-                                _selectedIdea!.programType.hunName,
+                            Text(_selectedIdea!.programType.hunName,
                                 style: const TextStyle(color: Colors.white)),
                           ],
                         ),
@@ -365,8 +372,7 @@ class _DrawCardWidgetState extends State<DrawCardWidget>
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 164,
                               child: Text(
-                                  _selectedIdea!.place ==
-                                      null
+                                  _selectedIdea!.place == null
                                       ? 'Nincs megadva'
                                       : _selectedIdea!.place!,
                                   style: const TextStyle(color: Colors.white)),
@@ -374,27 +380,24 @@ class _DrawCardWidgetState extends State<DrawCardWidget>
                           ],
                         ),
                         SizedBox(
-                            height: _selectedIdea!.coordinates ==
-                                null
-                                ? 0
-                                : 10),
+                            height:
+                                _selectedIdea!.coordinates == null ? 0 : 10),
                         _selectedIdea!.coordinates == null
                             ? Container()
                             : InkWell(
-                          child: const Text(
-                            'Megnyitás térképen',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontStyle: FontStyle.italic),
-                          ),
-                          onTap: () {
-                            _openMap(
-                                _selectedIdea!.coordinates!,
-                                _selectedIdea!.name,
-
-                                _selectedIdea!.place!);
-                          },
-                        )
+                                child: const Text(
+                                  'Megnyitás térképen',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontStyle: FontStyle.italic),
+                                ),
+                                onTap: () {
+                                  _openMap(
+                                      _selectedIdea!.coordinates!,
+                                      _selectedIdea!.name,
+                                      _selectedIdea!.place!);
+                                },
+                              )
                       ],
                     ),
                   ),

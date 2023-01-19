@@ -6,11 +6,11 @@ import 'package:flutter_flip_card/controllers/flip_card_controllers.dart';
 import 'package:flutter_flip_card/flipcard/flip_card.dart';
 import 'package:flutter_flip_card/modal/flip_side.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:mi_csi/enums/program_type.dart';
 import 'package:mi_csi/widgets/stateless/loading_animation.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
-import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 
 import '../api/program_idea.dart';
 import '../api/user.dart';
@@ -85,20 +85,24 @@ class _DrawRandomCardWidgetState extends State<DrawRandomCardWidget>
     return SafeArea(
       child: Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: selected
-            ? FloatingActionButton(
-          backgroundColor: Colors.black,
-          onPressed: () {
-            _openChosenDialog();
-          },
-          child: const Icon(Icons.save),
-        ): ElevatedButton(
-                onPressed: () {
-                  _startRandomize();
-                },
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.black)),
-                child: const Text('Sorsolás')),
+        floatingActionButton: programIdeas.isEmpty
+            ? Container()
+            : (selected
+                ? FloatingActionButton(
+                    backgroundColor: Colors.black,
+                    onPressed: () {
+                      _openChosenDialog();
+                    },
+                    child: const Icon(Icons.save),
+                  )
+                : ElevatedButton(
+                    onPressed: () {
+                      _startRandomize();
+                    },
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.black)),
+                    child: const Text('Sorsolás'))),
         appBar: AppBar(
           leading: InkWell(
             onTap: () {
@@ -115,143 +119,147 @@ class _DrawRandomCardWidgetState extends State<DrawRandomCardWidget>
           color: _colorAnimation.value,
           child: _loading
               ? const LoadingAnimation()
-              : ScrollSnapList(
-                  listController: scrollController,
-                  scrollDirection: Axis.horizontal,
-                  selectedItemAnchor: SelectedItemAnchor.MIDDLE,
-                  onItemFocus: _onItemFocus,
-                  itemSize: 200,
-                  initialIndex: 0,
-                  scrollPhysics: selected
-                      ? const NeverScrollableScrollPhysics()
-                      : const ScrollPhysics(),
-                  dynamicItemSize: true,
-                  itemBuilder: (context, i) {
-                    ProgramIdea idea = programIdeas.elementAt(i);
-                    Widget frontSide = Container(
-                      color: _colorAnimation.value,
-                      child: Container(
-                        decoration: idea.pictureId == null
-                            ? BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                                border: Border.all(color: Colors.black),
-                              )
-                            : BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.white,
-                                image: DecorationImage(
-                                  opacity: 0.3,
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(
-                                    "${widget.session.domainName}/api/images/${idea.pictureId}",
-                                    headers: widget.session.headers,
-                                  ),
-                                ),
-                              ),
-                        height: MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width,
-                        child: Center(
-                          child: Text(
-                            idea.name,
-                            style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width / 15,
-                            ),
-                            textAlign: TextAlign.center,
+              : (programIdeas.isEmpty ? Container(margin: const EdgeInsets.all(10), child: const Center(
+              child: Text(
+                'Nincsenek kártyák, a menüből elérve tudtok új kártyákat létrehozni!', textAlign: TextAlign.center, style: TextStyle(fontSize: 30),)),) : ScrollSnapList(
+            listController: scrollController,
+            scrollDirection: Axis.horizontal,
+            selectedItemAnchor: SelectedItemAnchor.MIDDLE,
+            onItemFocus: _onItemFocus,
+            itemSize: 200,
+            initialIndex: 0,
+            scrollPhysics: selected
+                ? const NeverScrollableScrollPhysics()
+                : const ScrollPhysics(),
+            dynamicItemSize: true,
+            itemBuilder: (context, i) {
+              ProgramIdea idea = programIdeas.elementAt(i);
+              Widget frontSide = Container(
+                color: _colorAnimation.value,
+                child: Container(
+                  decoration: idea.pictureId == null
+                      ? BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    border: Border.all(color: Colors.black),
+                  )
+                      : BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
+                    image: DecorationImage(
+                      opacity: 0.3,
+                      fit: BoxFit.fill,
+                      image: NetworkImage(
+                        "${widget.session.domainName}/api/images/${idea.pictureId}",
+                        headers: widget.session.headers,
+                      ),
+                    ),
+                  ),
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Text(
+                      idea.name,
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width / 15,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              );
+
+              Widget backSide = Container(
+                color: _colorAnimation.value,
+                child: idea.pictureId == null
+                    ? Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.black,
+                      ),
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(
+                        child: Icon(
+                          idea.programType.icon,
+                          color: Colors.white,
+                          size: MediaQuery.of(context).size.width / 4,
+                        ),
+                      ),
+                    ))
+                    : Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            "${widget.session.domainName}/api/images/${idea.pictureId}",
+                            headers: widget.session.headers,
                           ),
                         ),
                       ),
-                    );
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                    )),
+              );
+              // _askForConfirm(idea, flipCardController);
 
-                    Widget backSide = Container(
-                      color: _colorAnimation.value,
-                      child: idea.pictureId == null
-                          ? Center(
-                              child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.black,
-                              ),
-                              height: MediaQuery.of(context).size.height,
-                              width: MediaQuery.of(context).size.width,
-                              child: Center(
-                                child: Icon(
-                                  idea.programType.icon,
-                                  color: Colors.white,
-                                  size: MediaQuery.of(context).size.width / 4,
-                                ),
-                              ),
-                            ))
-                          : Center(
-                              child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                    "${widget.session.domainName}/api/images/${idea.pictureId}",
-                                    headers: widget.session.headers,
-                                  ),
-                                ),
-                              ),
-                              height: MediaQuery.of(context).size.height,
-                              width: MediaQuery.of(context).size.width,
-                            )),
-                    );
-                    // _askForConfirm(idea, flipCardController);
-
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        GestureDetector(
-                          child: AnimatedSize(
-                            duration: const Duration(seconds: 1),
-                            child: Container(
-                              height: _selectedIdea == idea ? 390 : 300,
-                              width: _selectedIdea == idea ? 260 : 200,
-                              color: Colors.white,
-                              child: FlipCard(
-                                rotateSide: RotateSide.right,
-                                animationDuration: const Duration(seconds: 1),
-                                axis: FlipAxis.vertical,
-                                controller: flipCardControllers.elementAt(i),
-                                frontWidget: backSide,
-                                backWidget: frontSide,
-                              ),
-                            ),
-                          ),
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  GestureDetector(
+                    child: AnimatedSize(
+                      duration: const Duration(seconds: 1),
+                      child: Container(
+                        height: _selectedIdea == idea ? 390 : 300,
+                        width: _selectedIdea == idea ? 260 : 200,
+                        color: Colors.white,
+                        child: FlipCard(
+                          rotateSide: RotateSide.right,
+                          animationDuration: const Duration(seconds: 1),
+                          axis: FlipAxis.vertical,
+                          controller: flipCardControllers.elementAt(i),
+                          frontWidget: backSide,
+                          backWidget: frontSide,
                         ),
-                      ],
-                    );
-                  },
-                  itemCount: programIdeas.length,
-                  reverse: false,
-                ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+            itemCount: programIdeas.length,
+            reverse: false,
+          )),
         ),
       ),
     );
   }
 
   void _startRandomize() async {
-    int end = Random().nextInt(2) + 3;
-    for (int i = 0; i < end; i++) {
-      await scrollController.animateTo((programIdeas.length - 1) * 200 - 20,
-          duration: const Duration(seconds: 1), curve: Curves.ease);
+    int selectedItemIndex = 0;
+    if (programIdeas.length > 1) {
+      int end = Random().nextInt(2) + 3;
+      for (int i = 0; i < end; i++) {
+        await scrollController.animateTo((programIdeas.length - 1) * 200 - 20,
+            duration: const Duration(seconds: 1), curve: Curves.ease);
+        await Future.delayed(const Duration(milliseconds: 200));
+        await scrollController.animateTo(0,
+            duration: const Duration(seconds: 1), curve: Curves.ease);
+        await Future.delayed(const Duration(milliseconds: 200));
+      }
+      if (Random().nextInt(1) == 0) {
+        await scrollController.animateTo((programIdeas.length - 1) * 200 - 20,
+            duration: const Duration(seconds: 1), curve: Curves.ease);
+      }
       await Future.delayed(const Duration(milliseconds: 200));
-      await scrollController.animateTo(0,
-          duration: const Duration(seconds: 1), curve: Curves.ease);
-      await Future.delayed(const Duration(milliseconds: 200));
-    }
-    if (Random().nextInt(1) == 0) {
-      await scrollController.animateTo((programIdeas.length - 1) * 200 - 20,
+      selectedItemIndex = Random().nextInt(programIdeas.length);
+      await scrollController.animateTo(selectedItemIndex * 200 - 20,
           duration: const Duration(seconds: 1), curve: Curves.ease);
     }
     await Future.delayed(const Duration(milliseconds: 200));
-    int selectedItemIndex = Random().nextInt(programIdeas.length);
-    await scrollController.animateTo(selectedItemIndex * 200 - 20, duration: const Duration(seconds: 1), curve: Curves.ease);
-    await Future.delayed(const Duration(milliseconds: 200));
-    await flipCardControllers
-        .elementAt(selectedItemIndex)
-        .flipcard();
+    await flipCardControllers.elementAt(selectedItemIndex).flipcard();
     setState(() {
       selected = true;
       _selectedIdea = programIdeas.elementAt(selectedItemIndex);
@@ -321,8 +329,7 @@ class _DrawRandomCardWidgetState extends State<DrawRandomCardWidget>
                             const SizedBox(
                               width: 10,
                             ),
-                            Text(
-                                _selectedIdea!.programType.hunName,
+                            Text(_selectedIdea!.programType.hunName,
                                 style: const TextStyle(color: Colors.white)),
                           ],
                         ),
@@ -361,8 +368,7 @@ class _DrawRandomCardWidgetState extends State<DrawRandomCardWidget>
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 164,
                               child: Text(
-                                  _selectedIdea!.place ==
-                                      null
+                                  _selectedIdea!.place == null
                                       ? 'Nincs megadva'
                                       : _selectedIdea!.place!,
                                   style: const TextStyle(color: Colors.white)),
@@ -370,27 +376,24 @@ class _DrawRandomCardWidgetState extends State<DrawRandomCardWidget>
                           ],
                         ),
                         SizedBox(
-                            height: _selectedIdea!.coordinates ==
-                                null
-                                ? 0
-                                : 10),
+                            height:
+                                _selectedIdea!.coordinates == null ? 0 : 10),
                         _selectedIdea!.coordinates == null
                             ? Container()
                             : InkWell(
-                          child: const Text(
-                            'Megnyitás térképen',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontStyle: FontStyle.italic),
-                          ),
-                          onTap: () {
-                            _openMap(
-                                _selectedIdea!.coordinates!,
-                                _selectedIdea!.name,
-
-                                _selectedIdea!.place!);
-                          },
-                        )
+                                child: const Text(
+                                  'Megnyitás térképen',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontStyle: FontStyle.italic),
+                                ),
+                                onTap: () {
+                                  _openMap(
+                                      _selectedIdea!.coordinates!,
+                                      _selectedIdea!.name,
+                                      _selectedIdea!.place!);
+                                },
+                              )
                       ],
                     ),
                   ),
@@ -419,7 +422,7 @@ class _DrawRandomCardWidgetState extends State<DrawRandomCardWidget>
                   }
                 },
                 child:
-                const Text('Mentés', style: TextStyle(color: Colors.white)),
+                    const Text('Mentés', style: TextStyle(color: Colors.white)),
               ),
             ],
           );

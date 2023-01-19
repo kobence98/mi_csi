@@ -430,9 +430,22 @@ class _ProgramCardsWidgetState extends State<ProgramCardsWidget> {
                                       idea.place!);
                                 },
                               )
+
                       ],
                     ),
                   ),
+                  SizedBox(
+                    height: idea.userId == widget.user.userId ? 5 : 0,
+                  ),
+                  idea.userId == widget.user.userId ? Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black)), onPressed: (){_onDeleteIdeaPressed(idea.id);}, child: const Text('Törlés')),
+                        ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black)), onPressed: (){_onPutBackIdeaPressed(idea.id);}, child: const Text('Visszahelyezés a pakliba')),
+                      ],
+                    )
+                  ) : Container(),
                 ],
               ),
             ),
@@ -479,5 +492,51 @@ class _ProgramCardsWidgetState extends State<ProgramCardsWidget> {
         );
       },
     );
+  }
+
+  void _onDeleteIdeaPressed(int id) {
+    setState(() {
+      _loading = true;
+    });
+    session.delete(
+        '/api/programIdeas/$id').then((response) {
+      if (response.statusCode == 200) {
+        programIdeas.removeWhere((element) => element.id == id);
+        setState(() {
+          _loading = false;
+        });
+        Navigator.of(context).pop();
+        MiCsiToast.info('Sikeres törlés!');
+      } else {
+        setState(() {
+          _loading = false;
+        });
+        Navigator.of(context).pop();
+        MiCsiToast.error('Valami hiba történt, kérlek próbáld újra!');
+      }
+    });
+  }
+
+  void _onPutBackIdeaPressed(int id) {
+    setState(() {
+      _loading = true;
+    });
+    session.postJson(
+        '/api/programIdeas/$id/placeBackToDeck', {}).then((response) {
+      if (response.statusCode == 200) {
+        programIdeas.firstWhere((element) => element.id == id).usedTimes = 0;
+        setState(() {
+          _loading = false;
+        });
+        Navigator.of(context).pop();
+        MiCsiToast.info('Sikeres visszahelyezés!');
+      } else {
+        setState(() {
+          _loading = false;
+        });
+        Navigator.of(context).pop();
+        MiCsiToast.error('Valami hiba történt, kérlek próbáld újra!');
+      }
+    });
   }
 }

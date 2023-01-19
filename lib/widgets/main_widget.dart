@@ -420,7 +420,9 @@ class _MainWidgetState extends State<MainWidget> {
   }
 
   Widget _actualProgramIdeaWidget() {
-    return Container(
+    return SafeArea(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
       color: Colors.black,
       padding: const EdgeInsets.only(top: 100, left: 30, right: 30),
       child: Column(
@@ -605,7 +607,7 @@ class _MainWidgetState extends State<MainWidget> {
           )
         ],
       ),
-    );
+    ));
   }
 
   void _onCancelActualProgram() async {
