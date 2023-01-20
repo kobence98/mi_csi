@@ -124,27 +124,35 @@ class _HandleGroupsWidgetState extends State<HandleGroupsWidget> {
                                     ),
                                   ),
                                 ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    InkWell(
-                                      child: const Icon(Icons.copy),
-                                      onTap: () {
-                                        _onCopyGroupCode(
-                                            ownGroups.elementAt(i));
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    InkWell(
-                                      child: const Icon(Icons.logout),
-                                      onTap: () {
-                                        _onLeaveGroup(ownGroups.elementAt(i));
-                                      },
-                                    ),
-                                  ],
-                                )
+                                ownGroups.elementAt(i).isCreator
+                                    ? Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          InkWell(
+                                            child: const Icon(Icons.copy),
+                                            onTap: () {
+                                              _onCopyGroupCode(
+                                                  ownGroups.elementAt(i));
+                                            },
+                                          ),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          InkWell(
+                                            child: const Icon(Icons.logout),
+                                            onTap: () {
+                                              _onLeaveGroup(
+                                                  ownGroups.elementAt(i));
+                                            },
+                                          ),
+                                        ],
+                                      )
+                                    : InkWell(
+                                        child: const Icon(Icons.logout),
+                                        onTap: () {
+                                          _onLeaveGroup(ownGroups.elementAt(i));
+                                        },
+                                      ),
                               ],
                             ),
                           ),
@@ -176,13 +184,15 @@ class _HandleGroupsWidgetState extends State<HandleGroupsWidget> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text("Mégse", style: TextStyle(color: Colors.black)),
+                  child: const Text("Mégse",
+                      style: TextStyle(color: Colors.black)),
                 ),
                 TextButton(
                   onPressed: () {
                     _onJoinWithCode(setInnerState);
                   },
-                  child: const Text("Hozzáadás kóddal", style: TextStyle(color: Colors.black)),
+                  child: const Text("Hozzáadás kóddal",
+                      style: TextStyle(color: Colors.black)),
                 ),
               ],
             );
@@ -228,7 +238,8 @@ class _HandleGroupsWidgetState extends State<HandleGroupsWidget> {
               onPressed: () {
                 _onCreateNewGroupPressed();
               },
-              child: const Text("Létrehozás", style: TextStyle(color: Colors.black)),
+              child: const Text("Létrehozás",
+                  style: TextStyle(color: Colors.black)),
             ),
           ],
         );
@@ -363,7 +374,10 @@ class _HandleGroupsWidgetState extends State<HandleGroupsWidget> {
           builder: (context, setInnerInnerState) {
             return AlertDialog(
               backgroundColor: Colors.grey.shade900,
-              title: const Text("Írd be a kódot, amit a társad küldött!", style: TextStyle(color: Colors.white),),
+              title: const Text(
+                "Írd be a kódot, amit a társad küldött!",
+                style: TextStyle(color: Colors.white),
+              ),
               content: innerLoading
                   ? const LoadingAnimation()
                   : Container(
@@ -394,13 +408,16 @@ class _HandleGroupsWidgetState extends State<HandleGroupsWidget> {
                     Navigator.pop(context);
                     _invitationCodeController.clear();
                   },
-                  child: const Text("Mégse", style: TextStyle(color: Colors.white)),
+                  child: const Text("Mégse",
+                      style: TextStyle(color: Colors.white)),
                 ),
                 TextButton(
                   onPressed: () {
-                    _addListWithInvitationCode(setInnerState, setInnerInnerState);
+                    _addListWithInvitationCode(
+                        setInnerState, setInnerInnerState);
                   },
-                  child: const Text("Listához adás", style: TextStyle(color: Colors.white)),
+                  child: const Text("Listához adás",
+                      style: TextStyle(color: Colors.white)),
                 ),
               ],
             );
@@ -409,7 +426,6 @@ class _HandleGroupsWidgetState extends State<HandleGroupsWidget> {
       },
     );
   }
-
 
   void _addListWithInvitationCode(setInnerState, setInnerInnerState) {
     setInnerInnerState(() {
@@ -433,10 +449,13 @@ class _HandleGroupsWidgetState extends State<HandleGroupsWidget> {
   }
 
   void _onCopyGroupCode(OwnGroup group) {
-    session.get('/api/groupInvitations/getCode/groups/${group.id}').then((response) {
+    session
+        .get('/api/groupInvitations/getCode/groups/${group.id}')
+        .then((response) {
       if (response.statusCode == 200) {
         String code = json.decode(utf8.decode(response.bodyBytes))['code'];
-        Clipboard.setData(ClipboardData(text: code)).whenComplete(() => MiCsiToast.info('Sikeres másolás: $code'));
+        Clipboard.setData(ClipboardData(text: code))
+            .whenComplete(() => MiCsiToast.info('Sikeres másolás: $code'));
         MiCsiToast.info('Sikeres hozzáadás!');
       } else {
         MiCsiToast.error('Valami hiba történt!');

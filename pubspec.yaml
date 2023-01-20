@@ -3,7 +3,7 @@ description: Milyen közös programot tudnánk ma csinálni?
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.1.1+1
+version: 1.1.2+1
 
 environment:
   sdk: '>=2.18.4 <3.0.0'
