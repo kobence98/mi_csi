@@ -430,22 +430,44 @@ class _ProgramCardsWidgetState extends State<ProgramCardsWidget> {
                                       idea.place!);
                                 },
                               )
-
                       ],
                     ),
                   ),
                   SizedBox(
                     height: idea.userId == widget.user.userId ? 5 : 0,
                   ),
-                  idea.userId == widget.user.userId ? Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black)), onPressed: (){_onDeleteIdeaPressed(idea.id);}, child: const Text('Törlés')),
-                        ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black)), onPressed: (){_onPutBackIdeaPressed(idea.id);}, child: const Text('Visszahelyezés a pakliba')),
-                      ],
-                    )
-                  ) : Container(),
+                  idea.userId == widget.user.userId
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: (MediaQuery.of(context).size.width) / 3 - 10,
+                              child: ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.black)),
+                                  onPressed: () {
+                                    _onDeleteIdeaPressed(idea.id);
+                                  },
+                                  child: const Text('Törlés')),
+                            ),
+                            SizedBox(
+                              width: (MediaQuery.of(context).size.width) / 3 - 10,
+                              child: ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.black)),
+                                  onPressed: () {
+                                    _onPutBackIdeaPressed(idea.id);
+                                  },
+                                  child:
+                                      const Text('Visszahelyezés a pakliba')),
+                            ),
+                          ],
+                        )
+                      : Container(),
                 ],
               ),
             ),
@@ -498,8 +520,7 @@ class _ProgramCardsWidgetState extends State<ProgramCardsWidget> {
     setState(() {
       _loading = true;
     });
-    session.delete(
-        '/api/programIdeas/$id').then((response) {
+    session.delete('/api/programIdeas/$id').then((response) {
       if (response.statusCode == 200) {
         programIdeas.removeWhere((element) => element.id == id);
         setState(() {
@@ -521,8 +542,8 @@ class _ProgramCardsWidgetState extends State<ProgramCardsWidget> {
     setState(() {
       _loading = true;
     });
-    session.postJson(
-        '/api/programIdeas/$id/placeBackToDeck', {}).then((response) {
+    session
+        .postJson('/api/programIdeas/$id/placeBackToDeck', {}).then((response) {
       if (response.statusCode == 200) {
         programIdeas.firstWhere((element) => element.id == id).usedTimes = 0;
         setState(() {

@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 class Session {
   Map<String, String> headers = {};
 
-  String domainName = 'http://164.90.230.81:8088';
-  // String domainName = 'http://10.0.2.2:8088';
+  // String domainName = 'http://164.90.230.81:8088';
+  String domainName = 'http://10.0.2.2:8088';
 
   Future<dynamic> get(String url) async {
     http.Response response =
