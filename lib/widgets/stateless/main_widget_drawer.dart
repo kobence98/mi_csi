@@ -3,8 +3,8 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:mi_csi/auth/auth_sqflite_handler.dart';
 import 'package:mi_csi/base/mi_csi_toast.dart';
 import 'package:mi_csi/widgets/create_new_program_idea_widget.dart';
+import 'package:mi_csi/widgets/stateless/loading_animation.dart';
 
-import '../../api/chosen_group_data.dart';
 import '../../api/user.dart';
 import '../../base/session.dart';
 import '../handle_groups_widget.dart';
@@ -101,8 +101,84 @@ class MainWidgetDrawer extends StatelessWidget {
               });
             },
           ),
+          Container(color: Colors.red,child: ListTile(
+            leading: const Icon(Icons.delete_forever),
+            title: const Text('Fiók törlése'),
+            onTap: () {
+              _onDeleteAccountTap(context);
+            },
+          ),)
         ],
       ),
     ));
+  }
+
+  void _onDeleteAccountTap(context) {
+    bool loading = false;
+    showDialog(
+        context: context,
+        useRootNavigator: false,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return loading ? const LoadingAnimation() : AlertDialog(
+              backgroundColor: Colors.red,
+              title: const Text(
+                'FELHASZNÁLÓI FIÓK TÖRLÉSE!',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.white),
+              ),
+              content: const Text('FIGYELEM, HA MEGNYOMOD A TÖRLÉS GOMBOT, AKKOR AZ ÖSSZES HOZZÁD TARTOZÓ KONTENT TÖRLŐDNI FOG AZ ALKALMAZÁSBÓL! BIZTOSAN AKAROD FOLYTATNI?',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.white),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'Mégse',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    _onDeleteAccountDeleteButtonTap(setState, context, loading);
+                  },
+                  child: const Text(
+                    'Törlés',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            );
+          });
+        });
+  }
+
+  _onDeleteAccountDeleteButtonTap(setState, context, loading) {
+    setState((){
+      loading = true;
+    });
+    session
+        .delete(
+        '/api/users')
+        .then((response) {
+      if (response.statusCode == 200) {
+        session.updateCookie(response);
+        authSqfLiteHandler.deleteUsers();
+        Phoenix.rebirth(context);
+        MiCsiToast.info('Sikeres felhasználói fiók törlés!');
+      } else {
+        setState((){
+          loading = false;
+        });
+        MiCsiToast.error('Valami hiba történt! Ellenőrizd az internetkapcsolatot!');
+      }
+    });
   }
 }

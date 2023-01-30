@@ -7,7 +7,7 @@ class MiCsiToast {
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
+        timeInSecForIosWeb: 4,
         backgroundColor: Colors.red,
         textColor: Colors.white,
         fontSize: 16.0
@@ -19,7 +19,7 @@ class MiCsiToast {
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
+        timeInSecForIosWeb: 4,
         backgroundColor: Colors.green,
         textColor: Colors.white,
         fontSize: 16.0
